@@ -1,0 +1,54 @@
+Sure! Let's start by creating the necessary files and restructuring the project as per your requirements. 
+
+1. **Extract the embedded JS into separate .js files**: We will create a `js` directory and move the JavaScript code into separate files.
+2. **Split HTML into templates**: We will create an `html` directory and separate the main HTML file into smaller template files.
+3. **Connect to a real backend API**: We will create a mock API service to simulate fetching live claims and saving verifications.
+4. **Replace simulated randomization with deterministic tests or mock API responses**: We will implement mock responses for testing.
+5. **Add unit/UI tests**: We will set up a basic testing structure.
+
+Let's start with the first file, which will be the main JavaScript file for handling API interactions. 
+
+**File path: /Users/rajdeepsingh/Downloads/aegis_ai-main/js/apiService.js**
+
+const apiService = {
+  fetchClaims: async function () {
+    // Simulated API call to fetch claims
+    const response = await fetch('/api/claims');
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  },
+
+  saveVerification: async function (verificationData) {
+    // Simulated API call to save verifications
+    const response = await fetch('/api/verifications', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(verificationData),
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  },
+
+  authenticateUser: async function (credentials) {
+    // Simulated API call for user authentication
+    const response = await fetch('/api/auth/login', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(credentials),
+    });
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    return response.json();
+  },
+};
+
+export default apiService;

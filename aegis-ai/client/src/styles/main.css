@@ -1,0 +1,13 @@
+/aegis_ai-main
+    /js
+        app.js
+        api.js
+        auth.js
+        charts.js
+    /templates
+        home.html
+        monitor.html
+        verify.html
+        trends.html
+        about.html
+    index.html

@@ -1,0 +1,2820 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aegis - Advanced Misinformation Detection</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap");
+      body {
+        font-family: "Inter", sans-serif;
+      }
+      .gradient-bg {
+        background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+      }
+      .hero-gradient {
+        background: linear-gradient(
+          135deg,
+          #0f172a 0%,
+          #1e293b 50%,
+          #334155 100%
+        );
+      }
+      .glass-effect {
+        backdrop-filter: blur(10px);
+        background: rgba(0, 0, 0, 0.1);
+      }
+      .pulse-animation {
+        animation: pulse 2s infinite;
+      }
+      @keyframes pulse {
+        0%,
+        100% {
+          opacity: 1;
+        }
+        50% {
+          opacity: 0.5;
+        }
+      }
+      .slide-in {
+        animation: slideIn 0.5s ease-out;
+      }
+      @keyframes slideIn {
+        from {
+          transform: translateY(20px);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0);
+          opacity: 1;
+        }
+      }
+      .fade-in {
+        animation: fadeIn 1s ease-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(30px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+      .verified {
+        background: linear-gradient(45deg, #10b981, #059669);
+      }
+      .misinformation {
+        background: linear-gradient(45deg, #ef4444, #dc2626);
+      }
+      .pending {
+        background: linear-gradient(45deg, #f59e0b, #d97706);
+      }
+      .page {
+        display: none;
+      }
+      .page.active {
+        display: block;
+      }
+      .nav-link {
+        transition: all 0.3s ease;
+      }
+      .nav-link:hover {
+        transform: translateY(-2px);
+      }
+      .floating-sparkle {
+        position: absolute;
+        width: 4px;
+        height: 4px;
+        background: white;
+        border-radius: 50%;
+        animation: sparkle 3s infinite;
+      }
+      @keyframes sparkle {
+        0%,
+        100% {
+          opacity: 0;
+          transform: scale(0);
+        }
+        50% {
+          opacity: 1;
+          transform: scale(1);
+        }
+      }
+      .version-badge {
+        background: linear-gradient(45deg, #3b82f6, #1d4ed8);
+      }
+      .premium-glow {
+        box-shadow: 0 0 30px rgba(59, 130, 246, 0.3);
+      }
+      .status-indicator {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        display: inline-block;
+        margin-right: 8px;
+      }
+      .status-online {
+        background-color: #10b981;
+        animation: pulse 2s infinite;
+      }
+      .status-processing {
+        background-color: #f59e0b;
+        animation: pulse 1s infinite;
+      }
+      .status-offline {
+        background-color: #ef4444;
+      }
+    </style>
+  </head>
+  <body class="bg-gray-900 min-h-screen text-gray-100">
+    <!-- Header -->
+    <header
+      class="gradient-bg text-white shadow-2xl border-b border-gray-700 sticky top-0 z-40"
+    >
+      <div class="container mx-auto px-6 py-4">
+        <div class="flex items-center justify-between">
+          <div class="flex items-center space-x-3">
+            <div
+              class="w-12 h-12 bg-gradient-to-br from-blue-600 via-purple-600 to-cyan-600 rounded-full flex items-center justify-center border-2 border-blue-400 shadow-lg shadow-blue-500/30 relative overflow-hidden premium-glow"
+            >
+              <svg
+                class="w-7 h-7 text-white drop-shadow-lg"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"
+                />
+                <path
+                  d="M12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8Z"
+                  opacity="0.7"
+                />
+              </svg>
+              <!-- Enhanced Sparkles -->
+              <div class="absolute inset-0 pointer-events-none">
+                <div
+                  class="floating-sparkle top-1 left-2"
+                  style="animation-delay: 0s"
+                ></div>
+                <div
+                  class="floating-sparkle top-3 right-1"
+                  style="animation-delay: 0.5s"
+                ></div>
+                <div
+                  class="floating-sparkle bottom-2 left-1"
+                  style="animation-delay: 1s"
+                ></div>
+                <div
+                  class="floating-sparkle bottom-1 right-2"
+                  style="animation-delay: 1.5s"
+                ></div>
+                <div
+                  class="floating-sparkle top-2 left-3"
+                  style="animation-delay: 2s"
+                ></div>
+              </div>
+            </div>
+            <div>
+              <div class="flex items-center space-x-2">
+                <h1
+                  class="text-3xl font-black cursor-pointer bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent hover:from-blue-300 hover:via-purple-300 hover:to-cyan-300 transition-all duration-300 tracking-wide"
+                  onclick="showPage('home')"
+                  style="
+                    font-family: 'Inter', sans-serif;
+                    letter-spacing: 0.05em;
+                  "
+                >
+                  AEGIS
+                </h1>
+              </div>
+              <div class="flex items-center space-x-2">
+                <span class="status-indicator status-online"></span>
+                <p class="text-gray-400 text-sm">
+                  Advanced Misinformation Detection System
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Navigation -->
+          <nav class="hidden md:flex items-center space-x-3">
+            <button
+              onclick="showPage('home')"
+              class="nav-link text-gray-300 hover:text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              <i class="fas fa-home mr-2"></i>Home
+            </button>
+            <button
+              onclick="showPage('monitor')"
+              class="nav-link text-gray-300 hover:text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              <i class="fas fa-satellite-dish mr-2"></i>Live Monitor
+            </button>
+            <button
+              onclick="showPage('verify')"
+              class="nav-link text-gray-300 hover:text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              <i class="fas fa-search mr-2"></i>Fact Check
+            </button>
+            <button
+              onclick="showPage('trends')"
+              class="nav-link text-gray-300 hover:text-white px-4 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              <i class="fas fa-chart-line mr-2"></i>Trend Analysis
+            </button>
+            <button
+              onclick="showPage('about')"
+              class="nav-link text-gray-300 hover:text-white px-3 py-2 rounded-lg hover:bg-gray-700 transition-colors"
+            >
+              <i class="fas fa-info-circle mr-2"></i>About
+            </button>
+          </nav>
+
+          <div class="flex items-center space-x-4">
+            <div id="userSection" class="flex items-center space-x-3">
+              <button
+                onclick="showLogin()"
+                class="bg-gray-700 hover:bg-gray-600 text-gray-200 px-4 py-2 rounded-lg text-sm transition-colors border border-gray-600"
+              >
+                Login
+              </button>
+              <button
+                onclick="showSignup()"
+                class="bg-white text-gray-900 hover:bg-gray-100 px-4 py-2 rounded-lg text-sm transition-colors font-medium border border-gray-300"
+              >
+                Sign up
+              </button>
+            </div>
+            <div id="userProfile" class="hidden flex items-center space-x-3">
+              <div class="text-right">
+                <div class="text-sm text-gray-400">Welcome back</div>
+                <div class="font-semibold text-white" id="userName"></div>
+              </div>
+              <div
+                class="w-10 h-10 bg-gray-700 rounded-full flex items-center justify-center border border-gray-600"
+              >
+                <i class="fas fa-user text-gray-300"></i>
+              </div>
+              <button
+                onclick="logout()"
+                class="bg-gray-700 hover:bg-gray-600 px-3 py-2 rounded-lg transition-colors text-gray-200"
+              >
+                <i class="fas fa-sign-out-alt"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </header>
+
+    <!-- Home Page -->
+    <div id="homePage" class="page active">
+      <div
+        class="hero-gradient min-h-screen flex items-center justify-center relative overflow-hidden"
+      >
+        <!-- Background Pattern -->
+        <div class="absolute inset-0 opacity-10">
+          <div
+            class="absolute top-20 left-20 w-72 h-72 bg-blue-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse"
+          ></div>
+          <div
+            class="absolute top-40 right-20 w-72 h-72 bg-purple-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse"
+            style="animation-delay: 2s"
+          ></div>
+          <div
+            class="absolute bottom-20 left-1/2 w-72 h-72 bg-pink-500 rounded-full mix-blend-multiply filter blur-xl animate-pulse"
+            style="animation-delay: 4s"
+          ></div>
+        </div>
+
+        <div class="container mx-auto px-6 text-center relative z-10">
+          <div class="fade-in">
+            <div class="mb-8">
+              <div
+                class="w-24 h-24 bg-gradient-to-br from-blue-600 via-purple-600 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-6 border-4 border-blue-400 shadow-2xl shadow-blue-500/40 relative overflow-hidden premium-glow"
+              >
+                <svg
+                  class="w-14 h-14 text-white drop-shadow-xl"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"
+                  />
+                  <path
+                    d="M12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8Z"
+                    opacity="0.8"
+                  />
+                </svg>
+                <!-- Enhanced Sparkles -->
+                <div class="absolute inset-0 pointer-events-none">
+                  <div
+                    class="floating-sparkle top-2 left-4"
+                    style="animation-delay: 0s; width: 6px; height: 6px"
+                  ></div>
+                  <div
+                    class="floating-sparkle top-6 right-2"
+                    style="animation-delay: 0.7s"
+                  ></div>
+                  <div
+                    class="floating-sparkle bottom-4 left-2"
+                    style="animation-delay: 1.4s"
+                  ></div>
+                  <div
+                    class="floating-sparkle bottom-2 right-4"
+                    style="animation-delay: 2.1s; width: 6px; height: 6px"
+                  ></div>
+                  <div
+                    class="floating-sparkle top-4 left-6"
+                    style="animation-delay: 2.8s"
+                  ></div>
+                  <div
+                    class="floating-sparkle top-8 right-6"
+                    style="animation-delay: 3.5s; width: 5px; height: 5px"
+                  ></div>
+                  <div
+                    class="floating-sparkle bottom-6 left-8"
+                    style="animation-delay: 4.2s"
+                  ></div>
+                </div>
+              </div>
+              <h1 class="text-6xl md:text-7xl font-black mb-6 leading-tight">
+                <span
+                  class="bg-gradient-to-r from-blue-400 via-purple-400 to-cyan-400 bg-clip-text text-transparent hover:from-blue-300 hover:via-purple-300 hover:to-cyan-300 transition-all duration-300 tracking-wide"
+                  style="
+                    font-family: 'Inter', sans-serif;
+                    letter-spacing: 0.05em;
+                  "
+                  >AEGIS</span
+                >
+              </h1>
+              <p
+                class="text-xl md:text-2xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed"
+              >
+                The most advanced AI-powered misinformation detection system.
+                Real-time monitoring, instant verification, and comprehensive
+                analysis during critical situations.
+              </p>
+            </div>
+
+            <div
+              class="flex flex-col sm:flex-row gap-4 justify-center items-center mb-12"
+            >
+              <button
+                onclick="showPage('monitor')"
+                class="bg-white text-gray-900 px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-100 transition-all transform hover:scale-105 shadow-2xl premium-glow"
+              >
+                <i class="fas fa-rocket mr-3"></i>Launch Aegis
+              </button>
+              <button
+                onclick="showPage('about')"
+                class="bg-transparent border-2 border-gray-600 text-white px-8 py-4 rounded-xl font-semibold text-lg hover:bg-gray-800 transition-all"
+              >
+                <i class="fas fa-info-circle mr-3"></i>Learn More
+              </button>
+            </div>
+
+            <!-- Feature Cards -->
+            <div class="grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
+              <div
+                class="bg-gray-800 bg-opacity-50 backdrop-blur-lg rounded-2xl p-8 border border-gray-700 hover:border-gray-600 transition-all hover:transform hover:scale-105 premium-glow"
+              >
+                <div
+                  class="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4"
+                >
+                  <i class="fas fa-satellite-dish text-2xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">
+                  Real-time Monitoring
+                </h3>
+                <p class="text-gray-400">
+                  Advanced AI surveillance with 99.7% accuracy rate. Monitors
+                  50+ platforms simultaneously with sub-second detection.
+                </p>
+              </div>
+
+              <div
+                class="bg-gray-800 bg-opacity-50 backdrop-blur-lg rounded-2xl p-8 border border-gray-700 hover:border-gray-600 transition-all hover:transform hover:scale-105 premium-glow"
+              >
+                <div
+                  class="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center mx-auto mb-4"
+                >
+                  <i class="fas fa-search text-2xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">
+                  Quantum Verification
+                </h3>
+                <p class="text-gray-400">
+                  Next-gen fact-checking powered by quantum algorithms.
+                  Cross-references 10,000+ sources in milliseconds.
+                </p>
+              </div>
+
+              <div
+                class="bg-gray-800 bg-opacity-50 backdrop-blur-lg rounded-2xl p-8 border border-gray-700 hover:border-gray-600 transition-all hover:transform hover:scale-105 premium-glow"
+              >
+                <div
+                  class="w-16 h-16 bg-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4"
+                >
+                  <i class="fas fa-brain text-2xl text-white"></i>
+                </div>
+                <h3 class="text-xl font-bold text-white mb-3">
+                  Predictive Analytics
+                </h3>
+                <p class="text-gray-400">
+                  AI predicts viral misinformation 6 hours before it spreads.
+                  Advanced neural networks with 94% prediction accuracy.
+                </p>
+              </div>
+            </div>
+
+            <!-- Unique Features -->
+            <div
+              class="mt-16 bg-gray-800 bg-opacity-30 backdrop-blur-lg rounded-3xl p-8 border border-gray-700 max-w-4xl mx-auto"
+            >
+              <h2 class="text-3xl font-bold text-white mb-6">
+                🚀 What Makes Aegis Unique
+              </h2>
+              <div class="grid md:grid-cols-2 gap-6 text-left">
+                <div class="flex items-start space-x-3">
+                  <div
+                    class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-1"
+                  >
+                    <i class="fas fa-bolt text-white text-sm"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-white mb-1">
+                      Lightning Speed Processing
+                    </h4>
+                    <p class="text-gray-400 text-sm">
+                      10x faster analysis with new quantum-enhanced algorithms
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                  <div
+                    class="w-8 h-8 bg-green-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-1"
+                  >
+                    <i class="fas fa-shield-alt text-white text-sm"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-white mb-1">
+                      Enhanced Security
+                    </h4>
+                    <p class="text-gray-400 text-sm">
+                      Military-grade encryption and advanced threat protection
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                  <div
+                    class="w-8 h-8 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-1"
+                  >
+                    <i class="fas fa-globe text-white text-sm"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-white mb-1">
+                      Global Coverage
+                    </h4>
+                    <p class="text-gray-400 text-sm">
+                      Now supports 127 languages and 200+ countries
+                    </p>
+                  </div>
+                </div>
+                <div class="flex items-start space-x-3">
+                  <div
+                    class="w-8 h-8 bg-yellow-600 rounded-lg flex items-center justify-center flex-shrink-0 mt-1"
+                  >
+                    <i class="fas fa-robot text-white text-sm"></i>
+                  </div>
+                  <div>
+                    <h4 class="font-semibold text-white mb-1">AI Assistant</h4>
+                    <p class="text-gray-400 text-sm">
+                      Built-in AI companion for personalized insights
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Live Monitor Page -->
+    <div id="monitorPage" class="page">
+      <div class="container mx-auto px-6 py-8">
+        <div class="mb-8">
+          <div class="flex items-center justify-between">
+            <div>
+              <h1 class="text-4xl font-bold text-white mb-4">
+                Aegis Live Monitor
+              </h1>
+              <p class="text-gray-400 text-lg">
+                Real-time crisis monitoring with quantum-enhanced detection
+              </p>
+            </div>
+            <div class="flex items-center space-x-3">
+              <div
+                class="flex items-center space-x-2 bg-gray-800 px-4 py-2 rounded-lg border border-gray-700"
+              >
+                <span class="status-indicator status-online"></span>
+                <span class="text-green-400 font-semibold">System Online</span>
+              </div>
+              <div
+                class="bg-gray-800 px-4 py-2 rounded-lg border border-gray-700"
+              >
+                <span class="text-gray-400">Uptime: </span>
+                <span class="text-white font-semibold" id="uptime">99.97%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Enhanced Stats Overview -->
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
+          <div
+            class="bg-gray-800 rounded-xl shadow-lg p-6 border-l-4 border-blue-500 border border-gray-700 premium-glow"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex-1 min-w-0">
+                <p class="text-gray-400 text-sm font-medium">Claims Analyzed</p>
+                <p
+                  class="text-2xl font-bold text-white truncate"
+                  id="claimsAnalyzed"
+                >
+                  2,847,392
+                </p>
+                <p class="text-green-400 text-sm">↑ 12.5% from yesterday</p>
+              </div>
+              <div
+                class="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center flex-shrink-0 ml-3"
+              >
+                <i class="fas fa-search text-blue-400 text-xl"></i>
+              </div>
+            </div>
+          </div>
+          <div
+            class="bg-gray-800 rounded-xl shadow-lg p-6 border-l-4 border-green-500 border border-gray-700 premium-glow"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex-1 min-w-0">
+                <p class="text-gray-400 text-sm font-medium">Verified True</p>
+                <p
+                  class="text-2xl font-bold text-white truncate"
+                  id="verifiedTrue"
+                >
+                  1,923,847
+                </p>
+                <p class="text-green-400 text-sm">↑ 8.3% accuracy rate</p>
+              </div>
+              <div
+                class="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center flex-shrink-0 ml-3"
+              >
+                <i class="fas fa-check-circle text-green-400 text-xl"></i>
+              </div>
+            </div>
+          </div>
+          <div
+            class="bg-gray-800 rounded-xl shadow-lg p-6 border-l-4 border-red-500 border border-gray-700 premium-glow"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex-1 min-w-0">
+                <p class="text-gray-400 text-sm font-medium">Misinformation</p>
+                <p
+                  class="text-2xl font-bold text-white truncate"
+                  id="misinformation"
+                >
+                  324,891
+                </p>
+                <p class="text-red-400 text-sm">↓ 15.2% blocked today</p>
+              </div>
+              <div
+                class="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center flex-shrink-0 ml-3"
+              >
+                <i class="fas fa-exclamation-triangle text-red-400 text-xl"></i>
+              </div>
+            </div>
+          </div>
+          <div
+            class="bg-gray-800 rounded-xl shadow-lg p-6 border-l-4 border-yellow-500 border border-gray-700 premium-glow"
+          >
+            <div class="flex items-center justify-between">
+              <div class="flex-1 min-w-0">
+                <p class="text-gray-400 text-sm font-medium">Processing</p>
+                <p
+                  class="text-2xl font-bold text-white truncate"
+                  id="underReview"
+                >
+                  598,654
+                </p>
+                <p class="text-yellow-400 text-sm">Avg: 0.3s per claim</p>
+              </div>
+              <div
+                class="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center flex-shrink-0 ml-3"
+              >
+                <i class="fas fa-clock text-yellow-400 text-xl"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Live Feed -->
+        <div
+          class="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700 premium-glow"
+        >
+          <div class="flex items-center justify-between mb-6">
+            <div class="flex items-center space-x-3">
+              <h2 class="text-xl font-bold text-white">Quantum Live Feed</h2>
+            </div>
+            <div class="flex space-x-2">
+              <button
+                class="px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 transition-colors border border-gray-600"
+                onclick="startQuantumScan()"
+              >
+                <i class="fas fa-play mr-2"></i>Start Quantum Scan
+              </button>
+              <button
+                class="px-4 py-2 bg-gray-600 text-gray-300 rounded-lg hover:bg-gray-500 transition-colors"
+                onclick="pauseScanning()"
+              >
+                <i class="fas fa-pause mr-2"></i>Pause
+              </button>
+              <button
+                class="px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+                onclick="enablePredictiveMode()"
+              >
+                <i class="fas fa-brain mr-2"></i>Predictive Mode
+              </button>
+            </div>
+          </div>
+
+          <div id="feedContainer" class="space-y-4 max-h-96 overflow-y-auto">
+            <!-- Feed items will be populated here -->
+          </div>
+        </div>
+
+        <!-- Enhanced Analytics Chart -->
+        <div
+          class="mt-8 bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700 premium-glow"
+        >
+          <h3 class="text-lg font-bold text-white mb-4">
+            Quantum Detection Accuracy - Real Time
+          </h3>
+          <canvas id="accuracyChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Fact Check Page -->
+    <div id="verifyPage" class="page">
+      <div class="container mx-auto px-6 py-8">
+        <div class="mb-8">
+          <h1 class="text-4xl font-bold text-white mb-4">
+            Aegis Quantum Fact Checker
+          </h1>
+          <p class="text-gray-400 text-lg">
+            Verify claims instantly with quantum-enhanced AI verification
+          </p>
+        </div>
+
+        <div class="max-w-4xl mx-auto">
+          <!-- Enhanced Claim Input -->
+          <div
+            class="bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-700 mb-8 premium-glow"
+          >
+            <h3 class="text-xl font-bold text-white mb-6">
+              Enter Claim for Quantum Analysis
+            </h3>
+            <div class="space-y-6">
+              <textarea
+                id="claimInput"
+                placeholder="Paste or type the claim you want to verify here... Aegis can analyze complex claims in 127 languages."
+                class="w-full p-4 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-none text-white placeholder-gray-400 text-lg"
+                rows="4"
+              ></textarea>
+              <div class="flex space-x-4">
+                <button
+                  onclick="quantumVerifyClaim()"
+                  class="flex-1 bg-white text-gray-900 py-4 rounded-lg hover:bg-gray-100 transition-colors font-semibold text-lg premium-glow"
+                >
+                  <i class="fas fa-atom mr-3"></i>Quantum Analyze
+                </button>
+                <button
+                  onclick="predictiveAnalysis()"
+                  class="flex-1 bg-purple-600 text-white py-4 rounded-lg hover:bg-purple-700 transition-colors font-semibold text-lg"
+                >
+                  <i class="fas fa-brain mr-3"></i>Predictive Analysis
+                </button>
+              </div>
+              <div id="verificationResult" class="hidden"></div>
+            </div>
+          </div>
+
+          <!-- Recent Verifications -->
+          <div
+            class="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700 premium-glow"
+          >
+            <h3 class="text-xl font-bold text-white mb-6">
+              Recent Quantum Verifications
+            </h3>
+            <div id="recentVerifications" class="space-y-4">
+              <!-- Recent items will be populated here -->
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Trend Analysis Page -->
+    <div id="trendsPage" class="page">
+      <div class="container mx-auto px-6 py-8">
+        <div class="mb-8">
+          <h1 class="text-4xl font-bold text-white mb-4">
+            Aegis Predictive Trends
+          </h1>
+          <p class="text-gray-400 text-lg">
+            AI-powered misinformation prediction and trend analysis
+          </p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          <!-- Trending Topics -->
+          <div
+            class="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700 premium-glow"
+          >
+            <h3 class="text-xl font-bold text-white mb-6">
+              Trending Misinformation Topics
+            </h3>
+            <div id="trendingTopics" class="space-y-4">
+              <!-- Trending items will be populated here -->
+            </div>
+          </div>
+
+          <!-- Category Chart -->
+          <div
+            class="bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700 premium-glow"
+          >
+            <h3 class="text-xl font-bold text-white mb-6">
+              Misinformation by Category
+            </h3>
+            <canvas id="categoryChart" width="400" height="300"></canvas>
+          </div>
+        </div>
+
+        <!-- Predictive Timeline -->
+        <div
+          class="mt-8 bg-gray-800 rounded-xl shadow-lg p-6 border border-gray-700 premium-glow"
+        >
+          <h3 class="text-xl font-bold text-white mb-6">
+            🔮 Predictive Misinformation Timeline
+          </h3>
+          <div class="space-y-4" id="trendTimeline">
+            <!-- Timeline items will be populated here -->
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced About Page -->
+    <div id="aboutPage" class="page">
+      <div class="container mx-auto px-6 py-8">
+        <div class="mb-8">
+          <h1 class="text-4xl font-bold text-white mb-4">About Aegis</h1>
+          <p class="text-gray-400 text-lg">
+            The future of misinformation detection is here
+          </p>
+        </div>
+
+        <div class="max-w-6xl mx-auto">
+          <!-- Mission Section -->
+          <div
+            class="bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-700 mb-8 premium-glow"
+          >
+            <div class="text-center mb-8">
+              <div
+                class="w-20 h-20 bg-gradient-to-br from-blue-600 via-purple-600 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-6 border-2 border-blue-400 premium-glow"
+              >
+                <i class="fas fa-bullseye text-3xl text-white"></i>
+              </div>
+              <h2 class="text-3xl font-bold text-white mb-4">Our Mission</h2>
+              <p
+                class="text-gray-300 text-lg leading-relaxed max-w-4xl mx-auto"
+              >
+                Aegis represents the pinnacle of misinformation detection
+                technology. Using quantum-enhanced algorithms and predictive AI,
+                we're not just detecting misinformation—we're preventing it. Our
+                mission is to create a world where truth prevails and
+                misinformation is stopped before it spreads.
+              </p>
+            </div>
+          </div>
+
+          <!-- Aegis Achievements -->
+          <div
+            class="bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-700 mb-8 premium-glow"
+          >
+            <h2 class="text-3xl font-bold text-white mb-8 text-center">
+              🏆 Aegis Achievements
+            </h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div class="text-center">
+                <div
+                  class="w-16 h-16 bg-blue-600 rounded-xl flex items-center justify-center mx-auto mb-4"
+                >
+                  <i class="fas fa-trophy text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">99.7%</h3>
+                <p class="text-gray-400">Detection Accuracy</p>
+              </div>
+              <div class="text-center">
+                <div
+                  class="w-16 h-16 bg-green-600 rounded-xl flex items-center justify-center mx-auto mb-4"
+                >
+                  <i class="fas fa-clock text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">0.3s</h3>
+                <p class="text-gray-400">Average Analysis Time</p>
+              </div>
+              <div class="text-center">
+                <div
+                  class="w-16 h-16 bg-purple-600 rounded-xl flex items-center justify-center mx-auto mb-4"
+                >
+                  <i class="fas fa-globe text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">127</h3>
+                <p class="text-gray-400">Languages Supported</p>
+              </div>
+              <div class="text-center">
+                <div
+                  class="w-16 h-16 bg-yellow-600 rounded-xl flex items-center justify-center mx-auto mb-4"
+                >
+                  <i class="fas fa-shield-alt text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">2.8B</h3>
+                <p class="text-gray-400">Claims Prevented</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Team Section -->
+          <div
+            class="bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-700 mb-8 premium-glow"
+          >
+            <h2 class="text-3xl font-bold text-white mb-8 text-center">
+              Our Global Team
+            </h2>
+            <div class="grid md:grid-cols-2 lg:grid-cols-4 gap-6">
+              <div class="text-center">
+                <div
+                  class="w-20 h-20 bg-gradient-to-br from-blue-600 to-purple-600 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-blue-400"
+                >
+                  <i class="fas fa-brain text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">47</h3>
+                <p class="text-blue-400 mb-2">AI Engineers</p>
+                <p class="text-gray-500 text-sm">
+                  Quantum machine learning and neural network specialists
+                </p>
+              </div>
+
+              <div class="text-center">
+                <div
+                  class="w-20 h-20 bg-gradient-to-br from-green-600 to-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-green-400"
+                >
+                  <i class="fas fa-atom text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">23</h3>
+                <p class="text-green-400 mb-2">Quantum Scientists</p>
+                <p class="text-gray-500 text-sm">
+                  Quantum computing and advanced algorithm development
+                </p>
+              </div>
+
+              <div class="text-center">
+                <div
+                  class="w-20 h-20 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-purple-400"
+                >
+                  <i class="fas fa-shield-alt text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">31</h3>
+                <p class="text-purple-400 mb-2">Security Experts</p>
+                <p class="text-gray-500 text-sm">
+                  Cybersecurity and ethical AI implementation
+                </p>
+              </div>
+
+              <div class="text-center">
+                <div
+                  class="w-20 h-20 bg-gradient-to-br from-yellow-600 to-orange-600 rounded-full flex items-center justify-center mx-auto mb-4 border-2 border-yellow-400"
+                >
+                  <i class="fas fa-chart-line text-2xl text-white"></i>
+                </div>
+                <h3 class="text-2xl font-bold text-white mb-2">19</h3>
+                <p class="text-yellow-400 mb-2">Data Analysts</p>
+                <p class="text-gray-500 text-sm">
+                  Real-time monitoring and trend prediction specialists
+                </p>
+              </div>
+            </div>
+
+            <div class="mt-8 text-center">
+              <div
+                class="inline-flex items-center space-x-2 bg-gray-700 px-6 py-3 rounded-lg border border-gray-600"
+              >
+                <i class="fas fa-globe text-blue-400"></i>
+                <span class="text-white font-semibold"
+                  >120+ Team Members Across 15 Countries</span
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- Join Us Section -->
+          <div
+            class="bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-700 premium-glow"
+          >
+            <div class="text-center">
+              <h2 class="text-3xl font-bold text-white mb-6">
+                Join the Aegis Community
+              </h2>
+              <p class="text-gray-300 text-lg mb-8">
+                Be part of the future of truth verification
+              </p>
+
+              <div class="flex justify-center space-x-6">
+                <a
+                  href="#"
+                  class="bg-gradient-to-r from-purple-500 to-pink-500 text-white px-6 py-3 rounded-lg hover:from-purple-600 hover:to-pink-600 transition-all transform hover:scale-105 font-semibold premium-glow"
+                >
+                  <i class="fab fa-instagram mr-2"></i>Instagram
+                </a>
+                <a
+                  href="#"
+                  class="bg-indigo-600 text-white px-6 py-3 rounded-lg hover:bg-indigo-700 transition-all transform hover:scale-105 font-semibold premium-glow"
+                >
+                  <i class="fab fa-discord mr-2"></i>Discord
+                </a>
+                <a
+                  href="#"
+                  class="bg-blue-600 text-white px-6 py-3 rounded-lg hover:bg-blue-700 transition-all transform hover:scale-105 font-semibold premium-glow"
+                >
+                  <i class="fab fa-linkedin mr-2"></i>LinkedIn
+                </a>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Login Modal -->
+    <div
+      id="loginModal"
+      class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50"
+    >
+      <div
+        class="bg-gray-800 rounded-xl shadow-2xl max-w-md w-full mx-4 border border-gray-700 premium-glow"
+      >
+        <div class="p-8">
+          <div class="text-center mb-8">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-blue-600 via-purple-600 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-400 premium-glow"
+            >
+              <svg
+                class="w-8 h-8 text-white"
+                fill="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  d="M12 2L13.09 8.26L20 9L13.09 9.74L12 16L10.91 9.74L4 9L10.91 8.26L12 2Z"
+                />
+                <path
+                  d="M12 8C14.21 8 16 9.79 16 12C16 14.21 14.21 16 12 16C9.79 16 8 14.21 8 12C8 9.79 9.79 8 12 8Z"
+                  opacity="0.6"
+                />
+              </svg>
+            </div>
+            <h2 class="text-2xl font-bold text-white">Welcome to Aegis</h2>
+            <p class="text-gray-400 mt-2">
+              Sign in to access quantum-powered features
+            </p>
+          </div>
+
+          <form onsubmit="handleLogin(event)" class="space-y-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Email Address</label
+              >
+              <input
+                type="email"
+                id="loginEmail"
+                required
+                class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                placeholder="Enter your email"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Password</label
+              >
+              <input
+                type="password"
+                id="loginPassword"
+                required
+                class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                placeholder="Enter your password"
+              />
+            </div>
+
+            <div class="flex items-center justify-between">
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  class="rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
+                />
+                <span class="ml-2 text-sm text-gray-400">Remember me</span>
+              </label>
+              <a href="#" class="text-sm text-blue-400 hover:text-blue-300"
+                >Forgot password?</a
+              >
+            </div>
+
+            <button
+              type="submit"
+              class="w-full bg-white text-gray-900 py-3 rounded-lg hover:bg-gray-100 transition-colors font-medium premium-glow"
+            >
+              <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+            </button>
+          </form>
+
+          <div class="mt-6 text-center">
+            <p class="text-gray-400">
+              Don't have an account?
+              <button
+                onclick="switchToSignup()"
+                class="text-blue-400 hover:text-blue-300 font-medium"
+              >
+                Sign up
+              </button>
+            </p>
+          </div>
+
+          <button
+            onclick="closeAuthModal()"
+            class="absolute top-4 right-4 text-gray-400 hover:text-gray-300"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Enhanced Signup Modal -->
+    <div
+      id="signupModal"
+      class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50"
+    >
+      <div
+        class="bg-gray-800 rounded-xl shadow-2xl max-w-md w-full mx-4 border border-gray-700 premium-glow"
+      >
+        <div class="p-8">
+          <div class="text-center mb-8">
+            <div
+              class="w-16 h-16 bg-gradient-to-br from-blue-600 via-purple-600 to-cyan-600 rounded-full flex items-center justify-center mx-auto mb-4 border border-blue-400 premium-glow"
+            >
+              <i class="fas fa-user-plus text-2xl text-white"></i>
+            </div>
+            <h2 class="text-2xl font-bold text-white">Join Aegis</h2>
+            <p class="text-gray-400 mt-2">
+              Get access to quantum-powered misinformation detection
+            </p>
+          </div>
+
+          <form onsubmit="handleSignup(event)" class="space-y-6">
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2"
+                  >First Name</label
+                >
+                <input
+                  type="text"
+                  id="signupFirstName"
+                  required
+                  class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                  placeholder="John"
+                />
+              </div>
+              <div>
+                <label class="block text-sm font-medium text-gray-300 mb-2"
+                  >Last Name</label
+                >
+                <input
+                  type="text"
+                  id="signupLastName"
+                  required
+                  class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                  placeholder="Doe"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Email Address</label
+              >
+              <input
+                type="email"
+                id="signupEmail"
+                required
+                class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                placeholder="john@example.com"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Organization (Optional)</label
+              >
+              <input
+                type="text"
+                id="signupOrg"
+                class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                placeholder="Your organization"
+              />
+            </div>
+
+            <div>
+              <label class="block text-sm font-medium text-gray-300 mb-2"
+                >Password</label
+              >
+              <input
+                type="password"
+                id="signupPassword"
+                required
+                class="w-full px-4 py-3 bg-gray-700 border border-gray-600 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent text-white placeholder-gray-400"
+                placeholder="Create a strong password"
+              />
+            </div>
+
+            <div>
+              <label class="flex items-center">
+                <input
+                  type="checkbox"
+                  required
+                  class="rounded border-gray-600 bg-gray-700 text-blue-500 focus:ring-blue-500"
+                />
+                <span class="ml-2 text-sm text-gray-400"
+                  >I agree to the
+                  <a href="#" class="text-blue-400 hover:text-blue-300"
+                    >Terms of Service</a
+                  >
+                  and
+                  <a href="#" class="text-blue-400 hover:text-blue-300"
+                    >Privacy Policy</a
+                  ></span
+                >
+              </label>
+            </div>
+
+            <button
+              type="submit"
+              class="w-full bg-white text-gray-900 py-3 rounded-lg hover:bg-gray-100 transition-colors font-medium premium-glow"
+            >
+              <i class="fas fa-user-plus mr-2"></i>Create Account
+            </button>
+          </form>
+
+          <div class="mt-6 text-center">
+            <p class="text-gray-400">
+              Already have an account?
+              <button
+                onclick="switchToLogin()"
+                class="text-blue-400 hover:text-blue-300 font-medium"
+              >
+                Sign in
+              </button>
+            </p>
+          </div>
+
+          <button
+            onclick="closeAuthModal()"
+            class="absolute top-4 right-4 text-gray-400 hover:text-gray-300"
+          >
+            <i class="fas fa-times text-xl"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Explanation Modal -->
+    <div
+      id="explanationModal"
+      class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50"
+    >
+      <div
+        class="bg-gray-800 rounded-xl shadow-2xl max-w-2xl w-full mx-4 max-h-96 overflow-y-auto border border-gray-700 premium-glow"
+      >
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h3 class="text-xl font-bold text-white">
+              Quantum Analysis Report
+            </h3>
+            <button
+              onclick="closeModal()"
+              class="text-gray-400 hover:text-gray-300"
+            >
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+          <div id="modalContent"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Share Modal -->
+    <div
+      id="shareModal"
+      class="fixed inset-0 bg-black bg-opacity-75 hidden items-center justify-center z-50"
+    >
+      <div
+        class="bg-gray-800 rounded-xl shadow-2xl max-w-md w-full mx-4 border border-gray-700 premium-glow"
+      >
+        <div class="p-6">
+          <div class="flex items-center justify-between mb-6">
+            <h3 class="text-xl font-bold text-white flex items-center">
+              <i class="fas fa-share-alt mr-2 text-blue-400"></i>
+              Share Quantum Analysis
+            </h3>
+            <button
+              onclick="closeShareModal()"
+              class="text-gray-400 hover:text-gray-300"
+            >
+              <i class="fas fa-times text-xl"></i>
+            </button>
+          </div>
+
+          <div class="mb-6">
+            <div class="bg-gray-700 p-4 rounded-lg border border-gray-600">
+              <p class="text-gray-300 text-sm mb-2">Sharing:</p>
+              <p id="sharePreview" class="text-white font-medium"></p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-2 gap-3">
+            <button
+              onclick="shareToWhatsApp()"
+              class="flex items-center justify-center space-x-2 bg-green-600 hover:bg-green-700 text-white py-3 px-4 rounded-lg transition-colors"
+            >
+              <i class="fab fa-whatsapp text-lg"></i>
+              <span>WhatsApp</span>
+            </button>
+
+            <button
+              onclick="shareToFacebook()"
+              class="flex items-center justify-center space-x-2 bg-blue-600 hover:bg-blue-700 text-white py-3 px-4 rounded-lg transition-colors"
+            >
+              <i class="fab fa-facebook text-lg"></i>
+              <span>Facebook</span>
+            </button>
+
+            <button
+              onclick="shareToTwitter()"
+              class="flex items-center justify-center space-x-2 bg-blue-400 hover:bg-blue-500 text-white py-3 px-4 rounded-lg transition-colors"
+            >
+              <i class="fab fa-twitter text-lg"></i>
+              <span>Twitter</span>
+            </button>
+
+            <button
+              onclick="shareToTelegram()"
+              class="flex items-center justify-center space-x-2 bg-blue-500 hover:bg-blue-600 text-white py-3 px-4 rounded-lg transition-colors"
+            >
+              <i class="fab fa-telegram text-lg"></i>
+              <span>Telegram</span>
+            </button>
+
+            <button
+              onclick="shareToLinkedIn()"
+              class="flex items-center justify-center space-x-2 bg-blue-700 hover:bg-blue-800 text-white py-3 px-4 rounded-lg transition-colors"
+            >
+              <i class="fab fa-linkedin text-lg"></i>
+              <span>LinkedIn</span>
+            </button>
+
+            <button
+              onclick="shareToReddit()"
+              class="flex items-center justify-center space-x-2 bg-orange-600 hover:bg-orange-700 text-white py-3 px-4 rounded-lg transition-colors"
+            >
+              <i class="fab fa-reddit text-lg"></i>
+              <span>Reddit</span>
+            </button>
+
+            <button
+              onclick="shareViaEmail()"
+              class="flex items-center justify-center space-x-2 bg-gray-600 hover:bg-gray-700 text-white py-3 px-4 rounded-lg transition-colors"
+            >
+              <i class="fas fa-envelope text-lg"></i>
+              <span>Email</span>
+            </button>
+
+            <button
+              onclick="copyToClipboard()"
+              class="flex items-center justify-center space-x-2 bg-purple-600 hover:bg-purple-700 text-white py-3 px-4 rounded-lg transition-colors"
+            >
+              <i class="fas fa-copy text-lg"></i>
+              <span>Copy Link</span>
+            </button>
+          </div>
+
+          <div class="mt-6 text-center">
+            <p class="text-gray-400 text-sm">
+              <i class="fas fa-shield-alt mr-1 text-blue-400"></i>
+              Verified by Aegis Quantum AI
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      let scanningActive = false;
+      let quantumMode = false;
+      let predictiveMode = false;
+      let feedItems = [];
+      let currentUser = null;
+      let currentPage = "home";
+
+      // Enhanced sample data for v10
+      const sampleClaims = [
+        {
+          text: "Quantum computers can predict weather with 100% accuracy",
+          status: "misinformation",
+          confidence: 97,
+          sources: 25,
+          explanation:
+            "While quantum computers show promise for weather modeling, 100% accuracy is impossible due to chaos theory and quantum uncertainty principles. Current quantum weather models achieve ~85% accuracy.",
+          audience: "scientific",
+          category: "Technology",
+          timestamp: "2 minutes ago",
+          quantumAnalysis: true,
+        },
+        {
+          text: "New climate data shows accelerating ice sheet melting in Antarctica",
+          status: "verified",
+          confidence: 94,
+          sources: 42,
+          explanation:
+            "Multiple peer-reviewed studies and satellite data confirm accelerating ice loss. NASA and ESA data corroborate these findings with high confidence.",
+          audience: "scientific",
+          category: "Climate",
+          timestamp: "5 minutes ago",
+          quantumAnalysis: true,
+        },
+        {
+          text: "AI systems will replace all human jobs by 2025",
+          status: "misinformation",
+          confidence: 89,
+          sources: 18,
+          explanation:
+            "This claim oversimplifies AI capabilities and timeline. While AI will transform many jobs, complete replacement by 2025 is not supported by current technological progress.",
+          audience: "general",
+          category: "Technology",
+          timestamp: "8 minutes ago",
+          quantumAnalysis: false,
+        },
+      ];
+
+      const enhancedTrendingTopics = [
+        {
+          topic: "Quantum Computing Misinformation",
+          mentions: 2847,
+          trend: "up",
+          category: "Technology",
+          prediction: "Will spike 300% in next 6 hours",
+        },
+        {
+          topic: "Climate Data Manipulation",
+          mentions: 1892,
+          trend: "down",
+          category: "Climate",
+          prediction: "Declining trend continues",
+        },
+        {
+          topic: "AI Consciousness Claims",
+          mentions: 1756,
+          trend: "up",
+          category: "Technology",
+          prediction: "Expected viral spread",
+        },
+        {
+          topic: "Vaccine Quantum Effects",
+          mentions: 1234,
+          trend: "stable",
+          category: "Health",
+          prediction: "Stable monitoring required",
+        },
+      ];
+
+      const recentVerifications = [
+        {
+          claim: "5G towers use quantum entanglement for mind control",
+          result: "False",
+          confidence: 99,
+          timestamp: "1 hour ago",
+          quantumVerified: true,
+        },
+        {
+          claim: "Quantum masks can filter out negative energy",
+          result: "False",
+          confidence: 96,
+          timestamp: "2 hours ago",
+          quantumVerified: true,
+        },
+        {
+          claim: "Quantum vitamin supplements boost immunity by 500%",
+          result: "False",
+          confidence: 98,
+          timestamp: "3 hours ago",
+          quantumVerified: true,
+        },
+      ];
+
+      // Page Navigation
+      function showPage(pageId) {
+        document.querySelectorAll(".page").forEach((page) => {
+          page.classList.remove("active");
+        });
+
+        document.getElementById(pageId + "Page").classList.add("active");
+        currentPage = pageId;
+
+        if (pageId === "monitor") {
+          populateFeed();
+          initializeCharts();
+          startQuantumUpdates();
+        } else if (pageId === "verify") {
+          populateRecentVerifications();
+        } else if (pageId === "trends") {
+          populateTrendingTopics();
+          initializeCategoryChart();
+          populateTrendTimeline();
+        }
+      }
+
+      function initializeApp() {
+        showPage("home");
+        updateUserInterface();
+        startQuantumEffects();
+      }
+
+      function startQuantumEffects() {
+        // Add quantum sparkle effects
+        setInterval(() => {
+          if (Math.random() > 0.7) {
+            createQuantumSparkle();
+          }
+        }, 2000);
+      }
+
+      function createQuantumSparkle() {
+        const sparkle = document.createElement("div");
+        sparkle.className =
+          "fixed w-2 h-2 bg-blue-400 rounded-full pointer-events-none z-50";
+        sparkle.style.left = Math.random() * window.innerWidth + "px";
+        sparkle.style.top = Math.random() * window.innerHeight + "px";
+        sparkle.style.animation = "sparkle 2s ease-out forwards";
+
+        document.body.appendChild(sparkle);
+
+        setTimeout(() => {
+          sparkle.remove();
+        }, 2000);
+      }
+
+      function populateFeed() {
+        const container = document.getElementById("feedContainer");
+        if (!container) return;
+
+        container.innerHTML = "";
+
+        sampleClaims.forEach((claim, index) => {
+          const item = createFeedItem(claim, index);
+          container.appendChild(item);
+        });
+      }
+
+      function createFeedItem(claim, index) {
+        const div = document.createElement("div");
+        div.className =
+          "border border-gray-600 rounded-lg p-4 hover:shadow-md transition-shadow slide-in bg-gray-700 premium-glow";
+
+        const statusClass =
+          claim.status === "verified"
+            ? "verified"
+            : claim.status === "misinformation"
+            ? "misinformation"
+            : "pending";
+
+        const quantumBadge = claim.quantumAnalysis
+          ? '<span class="bg-purple-600 text-white text-xs px-2 py-1 rounded-full font-bold ml-2">QUANTUM</span>'
+          : "";
+
+        div.innerHTML = `
+                <div class="flex items-start justify-between">
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-2">
+                            <span class="text-xs text-gray-400">${
+                              claim.category
+                            }</span>
+                            <span class="text-xs text-gray-500">•</span>
+                            <span class="text-xs text-gray-400">${
+                              claim.timestamp
+                            }</span>
+                            ${quantumBadge}
+                        </div>
+                        <p class="text-white font-medium mb-2">${claim.text}</p>
+                        <div class="flex items-center space-x-4 text-sm text-gray-400">
+                            <span><i class="fas fa-chart-line mr-1"></i>Confidence: ${
+                              claim.confidence
+                            }%</span>
+                            <span><i class="fas fa-link mr-1"></i>Sources: ${
+                              claim.sources
+                            }</span>
+                            <span><i class="fas fa-users mr-1"></i>Audience: ${
+                              claim.audience
+                            }</span>
+                        </div>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <span class="${statusClass} text-white px-3 py-1 rounded-full text-xs font-medium">
+                            ${claim.status.toUpperCase()}
+                        </span>
+                        <button onclick="showExplanation(${index})" class="text-gray-400 hover:text-gray-300">
+                            <i class="fas fa-info-circle"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+
+        return div;
+      }
+
+      function startQuantumScan() {
+        quantumMode = true;
+        scanningActive = true;
+        const button = document.querySelector('[onclick="startQuantumScan()"]');
+        if (button) {
+          button.innerHTML =
+            '<i class="fas fa-atom fa-spin mr-2"></i>Quantum Scanning...';
+          button.classList.add("premium-glow");
+
+          setTimeout(() => {
+            addQuantumFeedItem();
+            updateQuantumStats();
+            button.innerHTML =
+              '<i class="fas fa-play mr-2"></i>Start Quantum Scan';
+            button.classList.remove("premium-glow");
+            scanningActive = false;
+          }, 4000);
+        }
+      }
+
+      function enablePredictiveMode() {
+        predictiveMode = !predictiveMode;
+        const button = document.querySelector(
+          '[onclick="enablePredictiveMode()"]'
+        );
+        if (button) {
+          if (predictiveMode) {
+            button.innerHTML =
+              '<i class="fas fa-brain mr-2"></i>Predictive: ON';
+            button.classList.add("bg-purple-700");
+            showSuccessMessage(
+              "🔮 Predictive mode enabled! AI is now forecasting misinformation trends."
+            );
+          } else {
+            button.innerHTML =
+              '<i class="fas fa-brain mr-2"></i>Predictive Mode';
+            button.classList.remove("bg-purple-700");
+            showSuccessMessage("Predictive mode disabled.");
+          }
+        }
+      }
+
+      function addQuantumFeedItem() {
+        const quantumClaims = [
+          "Quantum healing crystals can cure any disease instantly",
+          "Scientists discover quantum tunneling in human consciousness",
+          "Quantum water has memory and can store information",
+          "New quantum diet allows eating without gaining weight",
+        ];
+
+        const newClaim = {
+          text: quantumClaims[Math.floor(Math.random() * quantumClaims.length)],
+          status: "misinformation",
+          confidence: 95 + Math.floor(Math.random() * 5),
+          sources: 15 + Math.floor(Math.random() * 20),
+          explanation:
+            "Quantum analysis detected pseudoscientific terminology misuse. No credible scientific basis found.",
+          audience: "general",
+          category: "Pseudoscience",
+          timestamp: "Just now",
+          quantumAnalysis: true,
+        };
+
+        const container = document.getElementById("feedContainer");
+        if (container) {
+          const newItem = createFeedItem(newClaim, sampleClaims.length);
+          container.insertBefore(newItem, container.firstChild);
+          sampleClaims.unshift(newClaim);
+        }
+      }
+
+      function updateQuantumStats() {
+        const elements = [
+          "claimsAnalyzed",
+          "verifiedTrue",
+          "misinformation",
+          "underReview",
+        ];
+        elements.forEach((id) => {
+          const element = document.getElementById(id);
+          if (element) {
+            const current = parseInt(element.textContent.replace(/,/g, ""));
+            const increase = Math.floor(Math.random() * 1000) + 100;
+            element.textContent = (current + increase).toLocaleString();
+          }
+        });
+      }
+
+      function detectLanguage(text) {
+        // Simple language detection based on character patterns
+        const hindiPattern = /[\u0900-\u097F]/;
+        const arabicPattern = /[\u0600-\u06FF]/;
+        const chinesePattern = /[\u4e00-\u9fff]/;
+        const japanesePattern = /[\u3040-\u309f\u30a0-\u30ff]/;
+        const koreanPattern = /[\uac00-\ud7af]/;
+        const russianPattern = /[\u0400-\u04FF]/;
+        const spanishPattern = /[ñáéíóúü]/i;
+        const frenchPattern = /[àâäéèêëïîôöùûüÿç]/i;
+
+        if (hindiPattern.test(text)) return "hindi";
+        if (arabicPattern.test(text)) return "arabic";
+        if (chinesePattern.test(text)) return "chinese";
+        if (japanesePattern.test(text)) return "japanese";
+        if (koreanPattern.test(text)) return "korean";
+        if (russianPattern.test(text)) return "russian";
+        if (spanishPattern.test(text)) return "spanish";
+        if (frenchPattern.test(text)) return "french";
+        return "english";
+      }
+
+      function getLocalizedText(language, key) {
+        const translations = {
+          hindi: {
+            analyzing: "क्वांटम विश्लेषण प्रगति में...",
+            processing:
+              "क्वांटम न्यूरल नेटवर्क और 10,000+ सत्यापित स्रोतों के माध्यम से प्रसंस्करण",
+            verified: "क्वांटम सत्यापित: सत्य",
+            misinformation: "क्वांटम का पता लगाया: गलत सूचना",
+            confidence: "विश्वास",
+            sources: "स्रोत",
+            quantumScore: "क्वांटम स्कोर",
+            analysis: "🔬 क्वांटम AI विश्लेषण:",
+            trueAnalysis:
+              "हमारे क्वांटम-संवर्धित AI सिस्टम ने इस दावे को उन्नत न्यूरल नेटवर्क के माध्यम से संसाधित किया है, सत्यापित वैज्ञानिक डेटाबेस, सहकर्मी-समीक्षित पत्रिकाओं और वास्तविक समय तथ्य-जांच नेटवर्क के साथ क्रॉस-रेफरेंसिंग। क्वांटम विश्लेषण पुष्टि करता है कि यह जानकारी स्थापित वैज्ञानिक सहमति के साथ संरेखित है।",
+            falseAnalysis:
+              "क्वांटम विश्लेषण ने सत्यापित सूचना स्रोतों के साथ कई असंगतियों का पता लगाया। दावे में भ्रामक शब्दावली है और स्थापित वैज्ञानिक सिद्धांतों का खंडन करती है। हमारे क्वांटम एल्गोरिदम ने इसे उच्च विश्वास के साथ संभावित गलत सूचना के रूप में चिह्नित किया।",
+            share: "क्वांटम विश्लेषण साझा करें",
+            download: "क्वांटम रिपोर्ट डाउनलोड करें",
+          },
+          spanish: {
+            analyzing: "Análisis cuántico en progreso...",
+            processing:
+              "Procesando a través de redes neuronales cuánticas y más de 10,000 fuentes verificadas",
+            verified: "CUÁNTICO VERIFICADO: VERDADERO",
+            misinformation: "CUÁNTICO DETECTADO: DESINFORMACIÓN",
+            confidence: "Confianza",
+            sources: "Fuentes",
+            quantumScore: "Puntuación Cuántica",
+            analysis: "🔬 Análisis de IA Cuántica:",
+            trueAnalysis:
+              "Nuestro sistema de IA mejorado cuánticamente ha procesado esta afirmación a través de redes neuronales avanzadas, haciendo referencias cruzadas con bases de datos científicas verificadas, revistas revisadas por pares y redes de verificación de hechos en tiempo real. El análisis cuántico confirma que esta información se alinea con el consenso científico establecido.",
+            falseAnalysis:
+              "El análisis cuántico detectó múltiples inconsistencias con fuentes de información verificadas. La afirmación contiene terminología engañosa y contradice principios científicos establecidos. Nuestros algoritmos cuánticos marcaron esto como posible desinformación con alta confianza.",
+            share: "Compartir Análisis Cuántico",
+            download: "Descargar Reporte Cuántico",
+          },
+          french: {
+            analyzing: "Analyse quantique en cours...",
+            processing:
+              "Traitement via des réseaux de neurones quantiques et plus de 10 000 sources vérifiées",
+            verified: "QUANTIQUE VÉRIFIÉ: VRAI",
+            misinformation: "QUANTIQUE DÉTECTÉ: DÉSINFORMATION",
+            confidence: "Confiance",
+            sources: "Sources",
+            quantumScore: "Score Quantique",
+            analysis: "🔬 Analyse IA Quantique:",
+            trueAnalysis:
+              "Notre système IA amélioré quantiquement a traité cette affirmation via des réseaux de neurones avancés, en croisant avec des bases de données scientifiques vérifiées, des journaux évalués par des pairs et des réseaux de vérification des faits en temps réel. L'analyse quantique confirme que cette information s'aligne avec le consensus scientifique établi.",
+            falseAnalysis:
+              "L'analyse quantique a détecté plusieurs incohérences avec les sources d'information vérifiées. L'affirmation contient une terminologie trompeuse et contredit les principes scientifiques établis. Nos algorithmes quantiques ont signalé ceci comme une désinformation potentielle avec une grande confiance.",
+            share: "Partager l'Analyse Quantique",
+            download: "Télécharger le Rapport Quantique",
+          },
+          english: {
+            analyzing: "Quantum analysis in progress...",
+            processing:
+              "Processing through quantum neural networks and 10,000+ verified sources",
+            verified: "QUANTUM VERIFIED: TRUE",
+            misinformation: "QUANTUM DETECTED: MISINFORMATION",
+            confidence: "Confidence",
+            sources: "Sources",
+            quantumScore: "Quantum Score",
+            analysis: "🔬 Quantum AI Analysis:",
+            trueAnalysis:
+              "Our quantum-enhanced AI system has processed this claim through advanced neural networks, cross-referencing with verified scientific databases, peer-reviewed journals, and real-time fact-checking networks. The quantum analysis confirms this information aligns with established scientific consensus.",
+            falseAnalysis:
+              "Quantum analysis detected multiple inconsistencies with verified information sources. The claim contains misleading terminology and contradicts established scientific principles. Our quantum algorithms flagged this as potential misinformation with high confidence.",
+            share: "Share Quantum Analysis",
+            download: "Download Quantum Report",
+          },
+        };
+
+        return translations[language] || translations.english;
+      }
+
+      function quantumVerifyClaim() {
+        const input = document.getElementById("claimInput");
+        const result = document.getElementById("verificationResult");
+
+        if (!input || !result) return;
+
+        if (!input.value.trim()) {
+          alert("Please enter a claim to verify");
+          return;
+        }
+
+        const claimText = input.value.trim();
+        const detectedLanguage = detectLanguage(claimText);
+        const texts = getLocalizedText(detectedLanguage, "analyzing");
+
+        // Quantum verification process
+        result.className =
+          "mt-6 p-6 bg-purple-900 border border-purple-600 rounded-lg premium-glow";
+        result.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-atom fa-spin text-purple-400 text-xl"></i>
+                    <div>
+                        <p class="text-purple-300 font-semibold">${
+                          texts.analyzing
+                        }</p>
+                        <p class="text-purple-400 text-sm">${
+                          texts.processing
+                        }</p>
+                        <div class="mt-2 flex items-center space-x-2">
+                            <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full font-bold">
+                                ${detectedLanguage.toUpperCase()} DETECTED
+                            </span>
+                            <span class="bg-green-600 text-white text-xs px-2 py-1 rounded-full font-bold">
+                                MULTILINGUAL AI
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            `;
+        result.classList.remove("hidden");
+
+        setTimeout(() => {
+          const confidence = Math.floor(Math.random() * 20) + 80;
+          const isTrue = Math.random() > 0.4;
+          const sources = Math.floor(Math.random() * 50) + 25;
+          const quantumScore = Math.floor(Math.random() * 100) + 900;
+
+          result.className = `mt-6 p-6 rounded-lg premium-glow ${
+            isTrue
+              ? "bg-green-900 border border-green-600"
+              : "bg-red-900 border border-red-600"
+          }`;
+          result.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <i class="fas ${
+                              isTrue
+                                ? "fa-check-circle text-green-400"
+                                : "fa-exclamation-triangle text-red-400"
+                            } text-2xl mt-1"></i>
+                            <div class="flex-1">
+                                <div class="flex items-center space-x-2 mb-2">
+                                    <p class="font-bold text-xl ${
+                                      isTrue ? "text-green-300" : "text-red-300"
+                                    }">
+                                        ${
+                                          isTrue
+                                            ? texts.verified
+                                            : texts.misinformation
+                                        }
+                                    </p>
+                                    <span class="bg-purple-600 text-white text-xs px-2 py-1 rounded-full font-bold">QUANTUM</span>
+                                    <span class="bg-blue-600 text-white text-xs px-2 py-1 rounded-full font-bold">${detectedLanguage.toUpperCase()}</span>
+                                </div>
+                                <div class="grid grid-cols-3 gap-4 mb-4">
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold ${
+                                          isTrue
+                                            ? "text-green-400"
+                                            : "text-red-400"
+                                        }">${confidence}%</p>
+                                        <p class="text-sm text-gray-400">${
+                                          texts.confidence
+                                        }</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold text-white">${sources}</p>
+                                        <p class="text-sm text-gray-400">${
+                                          texts.sources
+                                        }</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold text-purple-400">${quantumScore}</p>
+                                        <p class="text-sm text-gray-400">${
+                                          texts.quantumScore
+                                        }</p>
+                                    </div>
+                                </div>
+                                <div class="bg-gray-800 p-4 rounded-lg border border-gray-600">
+                                    <h4 class="font-semibold text-white mb-2">${
+                                      texts.analysis
+                                    }</h4>
+                                    <p class="text-gray-300 leading-relaxed">
+                                        ${
+                                          isTrue
+                                            ? texts.trueAnalysis
+                                            : texts.falseAnalysis
+                                        }
+                                    </p>
+                                </div>
+                                <div class="flex space-x-3 mt-4">
+                                    <button onclick="showShareModal('${claimText.replace(
+                                      /'/g,
+                                      "\\'"
+                                    )}', '${isTrue}', ${confidence})" class="flex-1 bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors border border-gray-600 premium-glow">
+                                        <i class="fas fa-share mr-2"></i>${
+                                          texts.share
+                                        }
+                                    </button>
+                                    <button class="flex-1 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
+                                        <i class="fas fa-download mr-2"></i>${
+                                          texts.download
+                                        }
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        }, 4000);
+      }
+
+      function predictiveAnalysis() {
+        const input = document.getElementById("claimInput");
+        const result = document.getElementById("verificationResult");
+
+        if (!input || !result) return;
+
+        if (!input.value.trim()) {
+          alert("Please enter a claim for predictive analysis");
+          return;
+        }
+
+        result.className =
+          "mt-6 p-6 bg-blue-900 border border-blue-600 rounded-lg premium-glow";
+        result.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <i class="fas fa-brain fa-spin text-blue-400 text-xl"></i>
+                    <div>
+                        <p class="text-blue-300 font-semibold">Predictive analysis running...</p>
+                        <p class="text-blue-400 text-sm">Forecasting viral potential and spread patterns</p>
+                    </div>
+                </div>
+            `;
+        result.classList.remove("hidden");
+
+        setTimeout(() => {
+          const viralPotential = Math.floor(Math.random() * 100);
+          const spreadTime = Math.floor(Math.random() * 12) + 1;
+          const platforms = Math.floor(Math.random() * 6) + 4;
+
+          // Generate target platforms based on claim content
+          const allPlatforms = [
+            {
+              name: "Twitter/X",
+              icon: "fab fa-twitter",
+              risk: "high",
+              color: "bg-blue-600",
+            },
+            {
+              name: "Facebook",
+              icon: "fab fa-facebook",
+              risk: "high",
+              color: "bg-blue-700",
+            },
+            {
+              name: "Instagram",
+              icon: "fab fa-instagram",
+              risk: "medium",
+              color: "bg-pink-600",
+            },
+            {
+              name: "TikTok",
+              icon: "fab fa-tiktok",
+              risk: "high",
+              color: "bg-gray-800",
+            },
+            {
+              name: "YouTube",
+              icon: "fab fa-youtube",
+              risk: "medium",
+              color: "bg-red-600",
+            },
+            {
+              name: "WhatsApp",
+              icon: "fab fa-whatsapp",
+              risk: "high",
+              color: "bg-green-600",
+            },
+            {
+              name: "Telegram",
+              icon: "fab fa-telegram",
+              risk: "medium",
+              color: "bg-blue-500",
+            },
+            {
+              name: "Reddit",
+              icon: "fab fa-reddit",
+              risk: "medium",
+              color: "bg-orange-600",
+            },
+            {
+              name: "LinkedIn",
+              icon: "fab fa-linkedin",
+              risk: "low",
+              color: "bg-blue-800",
+            },
+          ];
+
+          // Select random platforms based on claim characteristics
+          const targetPlatforms = allPlatforms
+            .sort(() => Math.random() - 0.5)
+            .slice(0, platforms)
+            .sort((a, b) => {
+              const riskOrder = { high: 3, medium: 2, low: 1 };
+              return riskOrder[b.risk] - riskOrder[a.risk];
+            });
+
+          result.innerHTML = `
+                    <div class="space-y-4">
+                        <div class="flex items-start space-x-3">
+                            <i class="fas fa-crystal-ball text-blue-400 text-2xl mt-1"></i>
+                            <div class="flex-1">
+                                <h3 class="font-bold text-xl text-blue-300 mb-4">🔮 Predictive Analysis Results</h3>
+                                <div class="grid grid-cols-3 gap-4 mb-4">
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold text-blue-400">${viralPotential}%</p>
+                                        <p class="text-sm text-gray-400">Viral Potential</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold text-white">${spreadTime}h</p>
+                                        <p class="text-sm text-gray-400">Peak Spread Time</p>
+                                    </div>
+                                    <div class="text-center">
+                                        <p class="text-2xl font-bold text-purple-400">${platforms}</p>
+                                        <p class="text-sm text-gray-400">Target Platforms</p>
+                                    </div>
+                                </div>
+                                
+                                <!-- Target Platforms Display -->
+                                <div class="bg-gray-800 p-4 rounded-lg border border-gray-600 mb-4">
+                                    <h4 class="font-semibold text-white mb-3 flex items-center">
+                                        <i class="fas fa-bullseye mr-2 text-red-400"></i>Predicted Target Platforms
+                                    </h4>
+                                    <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+                                        ${targetPlatforms
+                                          .map(
+                                            (platform) => `
+                                            <div class="flex items-center space-x-2 ${
+                                              platform.color
+                                            } p-2 rounded-lg">
+                                                <i class="${
+                                                  platform.icon
+                                                } text-white"></i>
+                                                <div class="flex-1">
+                                                    <p class="text-white text-sm font-medium">${
+                                                      platform.name
+                                                    }</p>
+                                                    <p class="text-xs text-gray-200 capitalize">${
+                                                      platform.risk
+                                                    } Risk</p>
+                                                </div>
+                                                ${
+                                                  platform.risk === "high"
+                                                    ? '<i class="fas fa-exclamation-triangle text-yellow-400 text-xs"></i>'
+                                                    : ""
+                                                }
+                                            </div>
+                                        `
+                                          )
+                                          .join("")}
+                                    </div>
+                                    <div class="mt-3 text-xs text-gray-400">
+                                        <i class="fas fa-info-circle mr-1"></i>
+                                        Platforms ranked by predicted spread velocity and engagement patterns
+                                    </div>
+                                </div>
+                                
+                                <div class="bg-gray-800 p-4 rounded-lg border border-gray-600 mb-4">
+                                    <h4 class="font-semibold text-white mb-2">🧠 AI Prediction Summary:</h4>
+                                    <p class="text-gray-300 leading-relaxed">
+                                        Based on historical patterns and current trends, this claim has a ${viralPotential}% chance of going viral within ${spreadTime} hours. 
+                                        Our AI predicts it will primarily spread on <strong>${targetPlatforms
+                                          .slice(0, 2)
+                                          .map((p) => p.name)
+                                          .join(
+                                            " and "
+                                          )}</strong> first, then cascade to other platforms. 
+                                        ${
+                                          viralPotential > 70
+                                            ? "HIGH ALERT: Immediate monitoring recommended across all target platforms."
+                                            : viralPotential > 40
+                                            ? "MODERATE RISK: Standard monitoring protocols for high-risk platforms."
+                                            : "LOW RISK: Routine surveillance sufficient with focus on primary platforms."
+                                        }
+                                    </p>
+                                </div>
+                                
+                                <!-- Spread Timeline -->
+                                <div class="bg-gray-800 p-4 rounded-lg border border-gray-600">
+                                    <h4 class="font-semibold text-white mb-3 flex items-center">
+                                        <i class="fas fa-clock mr-2 text-yellow-400"></i>Predicted Spread Timeline
+                                    </h4>
+                                    <div class="space-y-2">
+                                        <div class="flex items-center justify-between text-sm">
+                                            <span class="text-gray-300">Initial spread (${
+                                              targetPlatforms[0]?.name
+                                            })</span>
+                                            <span class="text-blue-400 font-medium">0-${Math.floor(
+                                              spreadTime / 3
+                                            )}h</span>
+                                        </div>
+                                        <div class="flex items-center justify-between text-sm">
+                                            <span class="text-gray-300">Cross-platform amplification</span>
+                                            <span class="text-yellow-400 font-medium">${Math.floor(
+                                              spreadTime / 3
+                                            )}-${Math.floor(
+            (spreadTime * 2) / 3
+          )}h</span>
+                                        </div>
+                                        <div class="flex items-center justify-between text-sm">
+                                            <span class="text-gray-300">Peak viral spread</span>
+                                            <span class="text-red-400 font-medium">${Math.floor(
+                                              (spreadTime * 2) / 3
+                                            )}-${spreadTime}h</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+        }, 3000);
+      }
+
+      function populateRecentVerifications() {
+        const container = document.getElementById("recentVerifications");
+        if (!container) return;
+
+        container.innerHTML = "";
+
+        recentVerifications.forEach((verification) => {
+          const div = document.createElement("div");
+          div.className =
+            "border border-gray-600 rounded-lg p-4 bg-gray-700 premium-glow";
+
+          const resultColor =
+            verification.result === "False"
+              ? "text-red-400"
+              : verification.result === "True"
+              ? "text-green-400"
+              : "text-yellow-400";
+
+          const quantumBadge = verification.quantumVerified
+            ? '<span class="bg-purple-600 text-white text-xs px-2 py-1 rounded-full font-bold ml-2">QUANTUM</span>'
+            : "";
+
+          div.innerHTML = `
+                    <div class="flex items-start justify-between">
+                        <div class="flex-1">
+                            <p class="text-white font-medium mb-2">"${verification.claim}"</p>
+                            <div class="flex items-center space-x-4 text-sm text-gray-400">
+                                <span class="${resultColor} font-semibold">${verification.result}</span>
+                                <span>Confidence: ${verification.confidence}%</span>
+                                <span>${verification.timestamp}</span>
+                                ${quantumBadge}
+                            </div>
+                        </div>
+                    </div>
+                `;
+
+          container.appendChild(div);
+        });
+      }
+
+      function populateTrendingTopics() {
+        const container = document.getElementById("trendingTopics");
+        if (!container) return;
+
+        container.innerHTML = "";
+
+        enhancedTrendingTopics.forEach((topic) => {
+          const div = document.createElement("div");
+          div.className =
+            "flex items-center justify-between p-4 bg-gray-700 rounded-lg border border-gray-600 premium-glow";
+
+          const trendIcon =
+            topic.trend === "up"
+              ? "fa-arrow-up text-red-400"
+              : topic.trend === "down"
+              ? "fa-arrow-down text-green-400"
+              : "fa-minus text-gray-400";
+
+          div.innerHTML = `
+                    <div class="flex-1">
+                        <div class="flex items-center space-x-2 mb-1">
+                            <p class="font-medium text-white">${topic.topic}</p>
+                            <span class="text-xs bg-gray-600 text-gray-300 px-2 py-1 rounded">${
+                              topic.category
+                            }</span>
+                        </div>
+                        <p class="text-sm text-gray-400 mb-1">${topic.mentions.toLocaleString()} mentions</p>
+                        <p class="text-xs text-purple-400">🔮 ${
+                          topic.prediction
+                        }</p>
+                    </div>
+                    <i class="fas ${trendIcon}"></i>
+                `;
+
+          container.appendChild(div);
+        });
+      }
+
+      function populateTrendTimeline() {
+        const container = document.getElementById("trendTimeline");
+        if (!container) return;
+
+        const timelineData = [
+          {
+            time: "2 hours ago",
+            event: "AI predicts quantum misinformation spike",
+            severity: "high",
+            prediction: true,
+          },
+          {
+            time: "4 hours ago",
+            event: "Climate denial trending detected early",
+            severity: "medium",
+            prediction: true,
+          },
+          {
+            time: "6 hours ago",
+            event: "False tech claims prevented from spreading",
+            severity: "low",
+            prediction: false,
+          },
+          {
+            time: "8 hours ago",
+            event: "Health misinformation campaign blocked",
+            severity: "high",
+            prediction: false,
+          },
+        ];
+
+        container.innerHTML = "";
+
+        timelineData.forEach((item) => {
+          const div = document.createElement("div");
+          const severityColor =
+            item.severity === "high"
+              ? "border-red-500 bg-red-900"
+              : item.severity === "medium"
+              ? "border-yellow-500 bg-yellow-900"
+              : "border-green-500 bg-green-900";
+
+          const predictionBadge = item.prediction
+            ? '<span class="bg-purple-600 text-white text-xs px-2 py-1 rounded-full font-bold">PREDICTED</span>'
+            : "";
+
+          div.className = `border-l-4 ${severityColor} p-4 rounded-r-lg premium-glow`;
+          div.innerHTML = `
+                    <div class="flex items-center justify-between">
+                        <div>
+                            <p class="text-white font-medium">${item.event}</p>
+                            <p class="text-gray-400 text-sm">${item.time}</p>
+                        </div>
+                        <div class="flex space-x-2">
+                            <span class="text-xs px-2 py-1 rounded bg-gray-700 text-gray-300">${item.severity.toUpperCase()}</span>
+                            ${predictionBadge}
+                        </div>
+                    </div>
+                `;
+
+          container.appendChild(div);
+        });
+      }
+
+      function startQuantumUpdates() {
+        setInterval(() => {
+          if (currentPage === "monitor") {
+            updateQuantumStats();
+          }
+        }, 10000);
+      }
+
+      function showExplanation(index) {
+        const claim = sampleClaims[index];
+        const modal = document.getElementById("explanationModal");
+        const content = document.getElementById("modalContent");
+
+        if (!modal || !content || !claim) return;
+
+        const statusColor =
+          claim.status === "verified"
+            ? "text-green-400"
+            : claim.status === "misinformation"
+            ? "text-red-400"
+            : "text-yellow-400";
+
+        const quantumBadge = claim.quantumAnalysis
+          ? '<span class="bg-purple-600 text-white text-xs px-2 py-1 rounded-full font-bold ml-2">QUANTUM ANALYZED</span>'
+          : "";
+
+        content.innerHTML = `
+                <div class="space-y-4">
+                    <div class="p-4 bg-gray-700 rounded-lg border border-gray-600">
+                        <p class="font-medium text-white">"${claim.text}"</p>
+                        ${quantumBadge}
+                    </div>
+                    
+                    <div class="grid grid-cols-3 gap-4">
+                        <div class="text-center">
+                            <p class="text-2xl font-bold ${statusColor}">${
+          claim.confidence
+        }%</p>
+                            <p class="text-sm text-gray-400">Confidence</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-white">${
+                              claim.sources
+                            }</p>
+                            <p class="text-sm text-gray-400">Sources</p>
+                        </div>
+                        <div class="text-center">
+                            <p class="text-2xl font-bold text-gray-300">${
+                              claim.audience
+                            }</p>
+                            <p class="text-sm text-gray-400">Audience</p>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-medium text-white mb-2">${
+                          claim.quantumAnalysis
+                            ? "🔬 Quantum AI Analysis:"
+                            : "🤖 AI Analysis:"
+                        }</h4>
+                        <p class="text-gray-300 leading-relaxed">${
+                          claim.explanation
+                        }</p>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button onclick="showShareModal('${claim.text.replace(
+                          /'/g,
+                          "\\'"
+                        )}', '${claim.status === "verified"}', ${
+          claim.confidence
+        })" class="flex-1 bg-gray-700 text-white py-2 px-4 rounded-lg hover:bg-gray-600 transition-colors border border-gray-600 premium-glow">
+                            <i class="fas fa-share mr-2"></i>Share Analysis
+                        </button>
+                        <button class="flex-1 bg-purple-600 text-white py-2 px-4 rounded-lg hover:bg-purple-700 transition-colors">
+                            <i class="fas fa-flag mr-2"></i>Report Issue
+                        </button>
+                    </div>
+                </div>
+            `;
+
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+
+      function closeModal() {
+        const modal = document.getElementById("explanationModal");
+        if (modal) {
+          modal.classList.add("hidden");
+          modal.classList.remove("flex");
+        }
+      }
+
+      function initializeCharts() {
+        // Enhanced Accuracy Chart
+        const accuracyCtx = document.getElementById("accuracyChart");
+        if (accuracyCtx) {
+          new Chart(accuracyCtx.getContext("2d"), {
+            type: "line",
+            data: {
+              labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul"],
+              datasets: [
+                {
+                  label: "Quantum Detection Accuracy",
+                  data: [85, 87, 89, 91, 93, 95, 97],
+                  borderColor: "#8b5cf6",
+                  backgroundColor: "rgba(139, 92, 246, 0.1)",
+                  tension: 0.4,
+                  fill: true,
+                  borderWidth: 3,
+                },
+                {
+                  label: "Standard Detection",
+                  data: [82, 84, 85, 86, 87, 88, 89],
+                  borderColor: "#6b7280",
+                  backgroundColor: "rgba(107, 114, 128, 0.1)",
+                  tension: 0.4,
+                  fill: false,
+                  borderWidth: 2,
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  labels: {
+                    color: "#9ca3af",
+                  },
+                },
+              },
+              scales: {
+                y: {
+                  beginAtZero: false,
+                  min: 80,
+                  max: 100,
+                  ticks: {
+                    color: "#9ca3af",
+                  },
+                  grid: {
+                    color: "#374151",
+                  },
+                },
+                x: {
+                  ticks: {
+                    color: "#9ca3af",
+                  },
+                  grid: {
+                    color: "#374151",
+                  },
+                },
+              },
+            },
+          });
+        }
+      }
+
+      function initializeCategoryChart() {
+        const categoryCtx = document.getElementById("categoryChart");
+        if (categoryCtx) {
+          new Chart(categoryCtx.getContext("2d"), {
+            type: "doughnut",
+            data: {
+              labels: [
+                "Technology",
+                "Health",
+                "Politics",
+                "Climate",
+                "Pseudoscience",
+              ],
+              datasets: [
+                {
+                  data: [35, 25, 20, 15, 5],
+                  backgroundColor: [
+                    "#8b5cf6",
+                    "#ef4444",
+                    "#f59e0b",
+                    "#10b981",
+                    "#3b82f6",
+                  ],
+                  borderWidth: 2,
+                  borderColor: "#374151",
+                },
+              ],
+            },
+            options: {
+              responsive: true,
+              plugins: {
+                legend: {
+                  position: "bottom",
+                  labels: {
+                    color: "#9ca3af",
+                    padding: 20,
+                  },
+                },
+              },
+            },
+          });
+        }
+      }
+
+      // Authentication Functions
+      function showLogin() {
+        document.getElementById("loginModal").classList.remove("hidden");
+        document.getElementById("loginModal").classList.add("flex");
+      }
+
+      function showSignup() {
+        document.getElementById("signupModal").classList.remove("hidden");
+        document.getElementById("signupModal").classList.add("flex");
+      }
+
+      function closeAuthModal() {
+        document.getElementById("loginModal").classList.add("hidden");
+        document.getElementById("loginModal").classList.remove("flex");
+        document.getElementById("signupModal").classList.add("hidden");
+        document.getElementById("signupModal").classList.remove("flex");
+      }
+
+      function switchToSignup() {
+        closeAuthModal();
+        setTimeout(() => showSignup(), 100);
+      }
+
+      function switchToLogin() {
+        closeAuthModal();
+        setTimeout(() => showLogin(), 100);
+      }
+
+      function handleLogin(event) {
+        event.preventDefault();
+        const email = document.getElementById("loginEmail").value;
+        const password = document.getElementById("loginPassword").value;
+
+        const button = event.target.querySelector('button[type="submit"]');
+        button.innerHTML =
+          '<i class="fas fa-atom fa-spin mr-2"></i>Quantum Authentication...';
+        button.disabled = true;
+
+        setTimeout(() => {
+          currentUser = {
+            name:
+              email.split("@")[0].charAt(0).toUpperCase() +
+              email.split("@")[0].slice(1),
+            email: email,
+            role: "Quantum Analyst",
+            version: "latest",
+          };
+
+          updateUserInterface();
+          closeAuthModal();
+          showSuccessMessage("🚀 Welcome to Aegis! Quantum features unlocked.");
+
+          button.innerHTML = '<i class="fas fa-sign-in-alt mr-2"></i>Sign In';
+          button.disabled = false;
+        }, 2500);
+      }
+
+      function handleSignup(event) {
+        event.preventDefault();
+        const firstName = document.getElementById("signupFirstName").value;
+        const lastName = document.getElementById("signupLastName").value;
+        const email = document.getElementById("signupEmail").value;
+        const org = document.getElementById("signupOrg").value;
+
+        const button = event.target.querySelector('button[type="submit"]');
+        button.innerHTML =
+          '<i class="fas fa-atom fa-spin mr-2"></i>Creating Quantum Account...';
+        button.disabled = true;
+
+        setTimeout(() => {
+          currentUser = {
+            name: firstName + " " + lastName,
+            email: email,
+            organization: org || "Independent",
+            role: "New Quantum User",
+            version: "latest",
+          };
+
+          updateUserInterface();
+          closeAuthModal();
+          showSuccessMessage(
+            "🎉 Aegis account created! Welcome to the quantum future."
+          );
+
+          button.innerHTML =
+            '<i class="fas fa-user-plus mr-2"></i>Create Account';
+          button.disabled = false;
+        }, 3000);
+      }
+
+      function updateUserInterface() {
+        const userSection = document.getElementById("userSection");
+        const userProfile = document.getElementById("userProfile");
+        const userName = document.getElementById("userName");
+
+        if (currentUser) {
+          userSection.classList.add("hidden");
+          userProfile.classList.remove("hidden");
+          userName.textContent = currentUser.name;
+        } else {
+          userSection.classList.remove("hidden");
+          userProfile.classList.add("hidden");
+        }
+      }
+
+      function logout() {
+        currentUser = null;
+        updateUserInterface();
+        showSuccessMessage(
+          "Quantum session terminated. Thank you for using Aegis!"
+        );
+      }
+
+      function showSuccessMessage(message) {
+        const notification = document.createElement("div");
+        notification.className =
+          "fixed top-4 right-4 bg-gradient-to-r from-green-600 to-blue-600 text-white px-6 py-3 rounded-lg shadow-lg z-50 slide-in border border-green-500 premium-glow";
+        notification.innerHTML = `
+                <div class="flex items-center space-x-2">
+                    <i class="fas fa-check-circle"></i>
+                    <span>${message}</span>
+                </div>
+            `;
+
+        document.body.appendChild(notification);
+
+        setTimeout(() => {
+          notification.remove();
+        }, 5000);
+      }
+
+      // Initialize application
+      document.addEventListener("DOMContentLoaded", function () {
+        initializeApp();
+      });
+
+      // Sharing functionality
+      let currentShareData = {};
+
+      function showShareModal(claimText, isVerified, confidence) {
+        const modal = document.getElementById("shareModal");
+        const preview = document.getElementById("sharePreview");
+
+        if (!modal || !preview) return;
+
+        const status =
+          isVerified === "true" ? "VERIFIED" : "MISINFORMATION DETECTED";
+        const emoji = isVerified === "true" ? "✅" : "⚠️";
+
+        currentShareData = {
+          claim: claimText,
+          status: status,
+          confidence: confidence,
+          emoji: emoji,
+          url: window.location.href,
+        };
+
+        preview.textContent = `${emoji} Aegis AI Analysis: "${claimText.substring(
+          0,
+          80
+        )}${
+          claimText.length > 80 ? "..." : ""
+        }" - ${status} (${confidence}% confidence)`;
+
+        modal.classList.remove("hidden");
+        modal.classList.add("flex");
+      }
+
+      function closeShareModal() {
+        const modal = document.getElementById("shareModal");
+        if (modal) {
+          modal.classList.add("hidden");
+          modal.classList.remove("flex");
+        }
+      }
+
+      function generateShareText() {
+        const { claim, status, confidence, emoji } = currentShareData;
+        return `${emoji} AEGIS QUANTUM AI ANALYSIS ${emoji}
+
+"${claim}"
+
+🔬 RESULT: ${status}
+📊 CONFIDENCE: ${confidence}%
+🤖 VERIFIED BY: Quantum-Enhanced AI
+
+Fact-checked using advanced neural networks and 10,000+ verified sources.
+
+#AegisAI #FactCheck #MisinformationDetection #QuantumAI #TruthMatters
+
+Verify claims yourself at: ${window.location.origin}`;
+      }
+
+      function shareToWhatsApp() {
+        const text = generateShareText();
+        const url = `https://wa.me/?text=${encodeURIComponent(text)}`;
+        window.open(url, "_blank");
+        showSuccessMessage("🟢 Opening WhatsApp to share analysis...");
+      }
+
+      function shareToFacebook() {
+        const text = generateShareText();
+        const url = `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+          window.location.href
+        )}&quote=${encodeURIComponent(text)}`;
+        window.open(url, "_blank", "width=600,height=400");
+        showSuccessMessage("📘 Opening Facebook to share analysis...");
+      }
+
+      function shareToTwitter() {
+        const { claim, status, confidence, emoji } = currentShareData;
+        const shortText = `${emoji} Aegis AI: "${claim.substring(0, 100)}${
+          claim.length > 100 ? "..." : ""
+        }" - ${status} (${confidence}% confidence) #FactCheck #AegisAI`;
+        const url = `https://twitter.com/intent/tweet?text=${encodeURIComponent(
+          shortText
+        )}&url=${encodeURIComponent(window.location.href)}`;
+        window.open(url, "_blank", "width=600,height=400");
+        showSuccessMessage("🐦 Opening Twitter to share analysis...");
+      }
+
+      function shareToTelegram() {
+        const text = generateShareText();
+        const url = `https://t.me/share/url?url=${encodeURIComponent(
+          window.location.href
+        )}&text=${encodeURIComponent(text)}`;
+        window.open(url, "_blank");
+        showSuccessMessage("✈️ Opening Telegram to share analysis...");
+      }
+
+      function shareToLinkedIn() {
+        const { claim, status, confidence } = currentShareData;
+        const title = `Aegis AI Fact-Check: ${status}`;
+        const summary = `"${claim}" - Verified with ${confidence}% confidence using quantum-enhanced AI and 10,000+ sources.`;
+        const url = `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+          window.location.href
+        )}&title=${encodeURIComponent(title)}&summary=${encodeURIComponent(
+          summary
+        )}`;
+        window.open(url, "_blank", "width=600,height=400");
+        showSuccessMessage("💼 Opening LinkedIn to share analysis...");
+      }
+
+      function shareToReddit() {
+        const { claim, status, confidence, emoji } = currentShareData;
+        const title = `${emoji} Aegis AI Analysis: ${status} - "${claim.substring(
+          0,
+          100
+        )}${claim.length > 100 ? "..." : ""}"`;
+        const url = `https://reddit.com/submit?url=${encodeURIComponent(
+          window.location.href
+        )}&title=${encodeURIComponent(title)}`;
+        window.open(url, "_blank");
+        showSuccessMessage("🔴 Opening Reddit to share analysis...");
+      }
+
+      function shareViaEmail() {
+        const text = generateShareText();
+        const subject = `Aegis AI Fact-Check: ${currentShareData.status}`;
+        const body = `Hi,\n\nI wanted to share this fact-check analysis from Aegis AI:\n\n${text}\n\nBest regards`;
+        const url = `mailto:?subject=${encodeURIComponent(
+          subject
+        )}&body=${encodeURIComponent(body)}`;
+        window.location.href = url;
+        showSuccessMessage("📧 Opening email client to share analysis...");
+      }
+
+      function copyToClipboard() {
+        const text = generateShareText();
+
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard
+            .writeText(text)
+            .then(() => {
+              showSuccessMessage("📋 Analysis copied to clipboard!");
+            })
+            .catch(() => {
+              fallbackCopyToClipboard(text);
+            });
+        } else {
+          fallbackCopyToClipboard(text);
+        }
+      }
+
+      function fallbackCopyToClipboard(text) {
+        const textArea = document.createElement("textarea");
+        textArea.value = text;
+        textArea.style.position = "fixed";
+        textArea.style.left = "-999999px";
+        textArea.style.top = "-999999px";
+        document.body.appendChild(textArea);
+        textArea.focus();
+        textArea.select();
+
+        try {
+          document.execCommand("copy");
+          showSuccessMessage("📋 Analysis copied to clipboard!");
+        } catch (err) {
+          showSuccessMessage(
+            "❌ Could not copy to clipboard. Please copy manually."
+          );
+        }
+
+        document.body.removeChild(textArea);
+      }
+
+      // Close modals when clicking outside
+      document
+        .getElementById("explanationModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) {
+            closeModal();
+          }
+        });
+
+      document
+        .getElementById("shareModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) {
+            closeShareModal();
+          }
+        });
+
+      document
+        .getElementById("loginModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) {
+            closeAuthModal();
+          }
+        });
+
+      document
+        .getElementById("signupModal")
+        .addEventListener("click", function (e) {
+          if (e.target === this) {
+            closeAuthModal();
+          }
+        });
+    </script>
+    <script>
+      (function () {
+        function c() {
+          var b = a.contentDocument || a.contentWindow.document;
+          if (b) {
+            var d = b.createElement("script");
+            d.innerHTML =
+              "window.__CF$cv$params={r:'974b8d1313366edd',t:'MTc1NjEyOTc0OS4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";
+            b.getElementsByTagName("head")[0].appendChild(d);
+          }
+        }
+        if (document.body) {
+          var a = document.createElement("iframe");
+          a.height = 1;
+          a.width = 1;
+          a.style.position = "absolute";
+          a.style.top = 0;
+          a.style.left = 0;
+          a.style.border = "none";
+          a.style.visibility = "hidden";
+          document.body.appendChild(a);
+          if ("loading" !== document.readyState) c();
+          else if (window.addEventListener)
+            document.addEventListener("DOMContentLoaded", c);
+          else {
+            var e = document.onreadystatechange || function () {};
+            document.onreadystatechange = function (b) {
+              e(b);
+              "loading" !== document.readyState &&
+                ((document.onreadystatechange = e), c());
+            };
+          }
+        }
+      })();
+    </script>
+  </body>
+</html>
